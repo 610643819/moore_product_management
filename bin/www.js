@@ -8,5 +8,5 @@ const POST = 3000
 const serve = http.createServer(serverHandler)
 
 serve.listen(POST, () => {
-    console.log(`Listening on http://localhost/:${POST}`)
+    console.log(`Listening on http://localhost:${POST}`)
 })
