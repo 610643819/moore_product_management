@@ -32,6 +32,7 @@ function execSQL(sql) {
     return new Promise((resolve, reject) => {
         connection.query(sql, (err, result) => {
             if (err) {
+                console.log('sql执行失败：' + err)
                 return reject(err)
             }
             resolve(result)
