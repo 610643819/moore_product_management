@@ -16,15 +16,16 @@ class BaseModel {
 
 class SuccessModel extends BaseModel {
     constructor(data, massage) {
+        console.log('---->', data)
         super(data, massage);
-        this.errNo = 0;
+        this.code = 0;
     }
 }
 
 class ErrorModel extends BaseModel {
     constructor(data, massage) {
         super(data, massage);
-        this.errNo = -1;
+        this.code = -1;
     }
 }
 
