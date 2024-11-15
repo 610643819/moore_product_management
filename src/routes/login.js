@@ -12,7 +12,6 @@ const handleLoginRouter = (req, res) => {
                 return new SuccessModel(data)
             })
     } else if (req.method === 'POST' && req.path === '/api/login/login') {
-        console.log(321)
         return loginPost(req.body).then((data) => {
             return new SuccessModel(data)
         })

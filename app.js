@@ -7,9 +7,9 @@ const serverHandler = (req, res) => {
 
     // res.setHeader('Access-Control-Allow-Origin', '*');
     // 设置路由格式
-    res.setHeader('Access-Control-Allow-Origin', '*'); // 允许所有来源
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // 允许的请求方法
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Access-Token'); // 允许的请求头
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins or specify specific origins
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Allowed methods
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-access-token'); // 允许 Content-Type 和 x-access-token 头
     // res.setHeader('Content-Type', 'application/json');
     // 获取path
     const url = req.url;
@@ -24,9 +24,9 @@ const serverHandler = (req, res) => {
         return new Promise((resolve, reject) => {
             // 处理 OPTIONS 请求，直接返回
             if (req.method === 'OPTIONS') {
-                console.log('OPTIONS===>', req.query)
-                // return resolve(req.query);
-                return resolve(req.query);
+                res.writeHead(204); // No content
+                res.end();
+                return;
             }
             // POST 请求处理
             if (req.method === 'POST') {

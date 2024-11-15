@@ -13,8 +13,8 @@ const handleLoginRouter = (req, res) => {
         })
     }
     // 處理異步請求
-    if ((req.method === 'POST' || req.method === 'OPTIONS') && req.path === '/api/labelTable/push') {
-        console.log(321)
+    if ((req.method === 'POST' && req.path === '/api/labelTable/push')) {
+        console.log('push')
         // const dataObj = login()
         // // 业务逻辑在controllers模块
         // return login(req.body).then((result) => {
@@ -22,9 +22,7 @@ const handleLoginRouter = (req, res) => {
         //     return new SuccessModel(result)
         // })
         //
-        return login(req.body).then((data) => {
-            return new SuccessModel(data)
-        })
+        return pushLabelItem(req.body)
 
 
     }
