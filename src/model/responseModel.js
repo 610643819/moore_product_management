@@ -16,7 +16,7 @@ class BaseModel {
 
 class SuccessModel extends BaseModel {
     constructor(data, massage) {
-        console.log('---->', data)
+        console.log('7.SuccessModel', data)
         super(data, massage);
         this.code = 0;
     }

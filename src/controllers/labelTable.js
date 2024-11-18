@@ -1,36 +1,84 @@
 const execSQL = require("../db/mysql");
 
-const pushLabelItem = (body) => {
-    // console.log('执行SQL', body);
-    console.log('获取到的数据', body);
-    // body的值：data: [
-    //     { label: 'test1', value: 'test1', color: '#000000', type: '产品' },
-    //     { label: 'test2', value: 'test2', color: '#000000', type: '产品' },
-    //     { label: 'test3', value: 'test3', color: '#000000', type: '产品' },
-    //     { label: 'test4', value: 'test4', color: '#000000', type: '产品' }
-    // ]
-
-    const values = body.data.map(
+// 添加标签列表
+const pushLabelItem = (req) => {
+    const values = req.body.data.map(
         item => `('${item.label}', '${item.value}', '${item.color}', '${item.type}')`
     ).join(', ');
-    console.log('values', values)
-    // 输出('test1', 'test1', '#000000', '产品'), ('test2', 'test2', '#000000', '产品'), ('test3', 'test3', '#000000', '产品'), ('test4', 'test4', '#000000', '产品')
-    // 插入数据的 SQL
     let sql = `
         INSERT IGNORE INTO label_list (label, value, color, type)
         VALUES ${values};
         `;
-
-
-
-
-    console.log('执行SQL', sql); // 输出生成的 SQL 语句用于调试
+    console.log('6.执行SQL', sql); // 输出生成的 SQL 语句用于调试
     return execSQL(sql).then(result => {
-        // 根据需要处理执行结果
+        return result;
+    })
+}
+// 获取标签类别列表
+const getLabelTypeList = () => {
+    let sql = `
+       SELECT label, value FROM label_list_type WHERE is_deleted = 0;
+        `;
+    console.log('6.执行SQL', sql); // 输出生成的 SQL 语句用于调试
+    return execSQL(sql).then(result => {
         return result;
     });
 }
+// 获取标签列表
+const getLabelList = ({ body: { page = 1, pageSize = 10, label = '', type = -1 } }) => {
+    console.log('请求参数 --->', { page, pageSize, label, type });
+
+    // 构建查询条件
+    let sql = `SELECT label, value FROM label_list WHERE is_deleted = 0`;
+    const conditions = [];
+
+    // 添加查询条件
+    if (label) {
+        conditions.push(`label LIKE '%${label}%'`);
+    }
+    if (type >= 0) {
+        conditions.push(`type = ${type}`);
+    }
+
+    // 如果有查询条件，拼接到SQL中
+    if (conditions.length > 0) {
+        sql += ' AND ' + conditions.join(' AND ');
+    }
+
+    // 添加分页功能
+    const offset = (page - 1) * pageSize;
+    sql += ` LIMIT ${pageSize} OFFSET ${offset}`;
+
+    console.log('最终生成的SQL:', sql);
+
+    // 获取数据和总数
+    const dataPromise = execSQL(sql);
+
+    // 获取总数的查询语句
+    let totalSql = `SELECT COUNT(*) AS total FROM label_list WHERE is_deleted = 0`;
+    if (conditions.length > 0) {
+        totalSql += ' AND ' + conditions.join(' AND ');
+    }
+
+    // 执行查询并返回结果
+    return Promise.all([dataPromise, execSQL(totalSql)]).then(([result, totalResult]) => {
+        // 获取 total 数量
+        const total = totalResult[0]?.total || 0;
+
+        return {
+            list: result,  // 分页数据
+            total,   // 总记录数
+        };
+    }).catch(error => {
+        console.error('查询错误:', error);
+        throw error;
+    });
+};
+
+
 
 module.exports = {
-    pushLabelItem
+    pushLabelItem,
+    getLabelList,
+    getLabelTypeList
 }

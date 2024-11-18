@@ -1,5 +1,5 @@
 const {SuccessModel, ErrorModel} = require("../model/responseModel");
-const {login, loginPost} = require('../controllers/login.js')
+const {login} = require('../controllers/login.js')
 
 const handleLoginRouter = (req, res) => {
     // 处理路由的逻辑
@@ -12,7 +12,7 @@ const handleLoginRouter = (req, res) => {
                 return new SuccessModel(data)
             })
     } else if (req.method === 'POST' && req.path === '/api/login/login') {
-        return loginPost(req.body).then((data) => {
+        return login(req.body).then((data) => {
             return new SuccessModel(data)
         })
 
