@@ -2,7 +2,8 @@ const execSQL = require("../db/mysql");
 
 // 添加标签列表
 const pushLabelItem = (req) => {
-    const values = req.body.data.map(
+    console.log('debug', req.body)
+    const values = req.body.map(
         item => `('${item.label}', '${item.value}', '${item.color}', '${item.type}')`
     ).join(', ');
     let sql = `
@@ -25,19 +26,21 @@ const getLabelTypeList = () => {
     });
 }
 // 获取标签列表
-const getLabelList = ({ body: { page = 1, pageSize = 10, label = '', type = -1 } }) => {
-    console.log('请求参数 --->', { page, pageSize, label, type });
-
+// page 分页
+// pageSize 数量
+// label 标签名称
+// type 标签类型
+const getLabelList = ({ body: { page = 1, pageSize = 10, label = '', type = '' } }) => {
     // 构建查询条件
-    let sql = `SELECT label, value FROM label_list WHERE is_deleted = 0`;
+    let sql = `SELECT label, type, color, id, time, value FROM label_list WHERE is_deleted = 0`;
     const conditions = [];
 
     // 添加查询条件
     if (label) {
         conditions.push(`label LIKE '%${label}%'`);
     }
-    if (type >= 0) {
-        conditions.push(`type = ${type}`);
+    if (type) {
+        conditions.push(`type = '${type}'`);
     }
 
     // 如果有查询条件，拼接到SQL中
@@ -49,7 +52,7 @@ const getLabelList = ({ body: { page = 1, pageSize = 10, label = '', type = -1 }
     const offset = (page - 1) * pageSize;
     sql += ` LIMIT ${pageSize} OFFSET ${offset}`;
 
-    console.log('最终生成的SQL:', sql);
+    console.log('6.最终生成的SQL:', sql);
 
     // 获取数据和总数
     const dataPromise = execSQL(sql);

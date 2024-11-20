@@ -14,13 +14,20 @@ const config = {
     port: 3306,
     database: 'management_data',
     connectTimeout: 10000,
+    timeout: 30000,  // 查询超时设置为30秒
 }
 const connection = mysql.createConnection(config)
-
-connection.connect()
+// 执行连接
+connection.connect((err) => {
+    if (err) {
+        console.error('数据库连接失败: ' + err.stack);
+        return;
+    }
+    console.log('已连接到数据库，连接ID: ' + connection.threadId);
+});
 // 包装返回promise
 function execSQL(sql) {
-    console.log('execSQL 执行:', sql);
+    console.log('7.execSQL 执行:', sql);
     return new Promise((resolve, reject) => {
         connection.query(sql, (err, result) => {
             if (err) {
