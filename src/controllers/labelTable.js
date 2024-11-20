@@ -2,7 +2,6 @@ const execSQL = require("../db/mysql");
 
 // 添加标签列表
 const pushLabelItem = (req) => {
-    console.log('debug', req.body)
     const values = req.body.map(
         item => `('${item.label}', '${item.value}', '${item.color}', '${item.type}')`
     ).join(', ');

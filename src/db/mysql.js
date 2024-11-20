@@ -1,54 +1,61 @@
-// 链接mysql
 const mysql = require('mysql');
-// const config = {
-//     host: 'localhost',
-//     user: 'root',
-//     password: 'ting.1996',
-//     port: 3306,
-//     database: 'data',
-// }
+
+// 配置数据库连接
 const config = {
     host: '47.254.18.251',
     user: 'management_data',
     password: 'management_data',
     port: 3306,
     database: 'management_data',
-    connectTimeout: 10000,
-    timeout: 30000,  // 查询超时设置为30秒
-}
-const connection = mysql.createConnection(config)
-// 执行连接
-connection.connect((err) => {
-    if (err) {
-        console.error('数据库连接失败: ' + err.stack);
-        return;
-    }
-    console.log('已连接到数据库，连接ID: ' + connection.threadId);
-});
-// 包装返回promise
+    connectTimeout: 10000, // 连接超时
+    timeout: 30000,  // 查询超时
+};
+
+// 创建数据库连接
+let connection = mysql.createConnection(config);
+
+// 执行SQL查询
 function execSQL(sql) {
-    console.log('7.execSQL 执行:', sql);
     return new Promise((resolve, reject) => {
-        connection.query(sql, (err, result) => {
-            if (err) {
-                console.log('SQL 执行失败:', err);
-                if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-                    // 连接丢失的错误
-                    reject(new Error('数据库连接丢失，尝试重新连接'));
-                } else if (err.code === 'ECONNREFUSED') {
-                    // 连接被拒绝
-                    reject(new Error('数据库连接被拒绝，请检查网络连接'));
-                } else if (err.code === 'ETIMEDOUT') {
-                    // 超时错误
-                    reject(new Error('数据库连接超时，请检查网络或数据库配置'));
+        const executeQuery = () => {
+            connection.query(sql, (err, result) => {
+                if (err) {
+                    console.error('SQL 执行失败:', err);
+                    if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
+                        console.log('连接丢失或被拒绝，尝试重新连接...');
+                        // 重新连接数据库
+                        connection = mysql.createConnection(config);
+                        connection.connect((err) => {
+                            if (err) {
+                                console.error('重新连接失败:', err);
+                                reject(new Error('数据库连接失败'));
+                            } else {
+                                console.log('重新连接成功');
+                                executeQuery(); // 重新执行查询
+                            }
+                        });
+                    } else {
+                        reject(err); // 其他错误
+                    }
                 } else {
-                    // 其他错误
-                    reject(err);
+                    resolve(result); // 查询成功，返回结果
                 }
-                return;
-            }
-            resolve(result);
-        });
+            });
+        };
+
+        // 初次执行查询
+        executeQuery();
     });
 }
-module.exports = execSQL
+
+// 监听连接错误并重新连接
+connection.on('error', (err) => {
+    console.error('数据库连接错误:', err);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+        console.log('连接丢失，重新连接...');
+        connection = mysql.createConnection(config); // 重新创建连接
+        connection.connect();
+    }
+});
+
+module.exports = execSQL;

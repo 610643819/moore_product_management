@@ -1,14 +1,11 @@
 const {SuccessModel, ErrorModel} = require("../model/responseModel");
-const {pushLabelItem, getLabelTypeList, getLabelList} = require('../controllers/labelTable.js')
+const {pushManufacturerItem} = require('../controllers/manufacturer.js')
 
 const pathHandlers = {
-    '/api/labelTable/list': getLabelList, // 获取标签type
-    '/api/labelTable/type': getLabelTypeList, // 获取标签type
-    '/api/labelTable/push': {
-        POST: pushLabelItem,  // POST请求的处理函数
-        GET: pushLabelItem    // GET请求的处理函数
-    },
-};
+    '/api/manufacturer/list': '',
+    '/api/manufacturer/push': pushManufacturerItem,
+    '/api/manufacturer/detail': '',
+}
 
 const handleRouter = (req, res) => {
     const handler = pathHandlers[req.path];  // 获取当前路径的处理对象
