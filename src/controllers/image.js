@@ -4,10 +4,11 @@ const path = require('path');
 const fs = require('fs');
 
 const rootDir = path.join(__dirname, '../..');
+
 // 配置 multer，用于处理图片上传
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadDir = path.join(rootDir, 'src/uploads')
+        const uploadDir = path.join(rootDir, 'src/uploads');
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true }); // 自动创建文件夹
         }
@@ -40,8 +41,10 @@ const pushImageItem = async (req, res) => {
         // 等待文件上传完成
         const file = await uploadPromise();
         const imagePath = `/uploads/${file.filename}`; // 获取文件路径
-        const { tagName } = values; // 假设表单中有一个 tagName 字段
-        console.log('values====>', values)
+
+        // 使用上传的文件名作为 tagName
+        const tagName = file.filename; // 这里tagName即为文件名
+        console.log('tagName====>', tagName); // 如果有其他字段需要，也可以从values中获取
 
         // 构造 SQL 语句
         const sql = `
@@ -58,7 +61,7 @@ const pushImageItem = async (req, res) => {
         return {
             result,
             tagName,
-            imagePath
+            imagePath: imagePath
         };
 
     } catch (error) {
