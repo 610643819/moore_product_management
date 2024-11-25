@@ -19,21 +19,20 @@ const handleRouter = (req, res) => {
         if (typeof handler === 'function') {
             return handler(req, res).then(res => {
                 return new SuccessModel(res);
-            })
+            }).catch(err => new ErrorModel(err))
         }
         // 如果 handler 是对象，按请求方法分发
         if (handler[req.method]) {
             return handler[req.method](req, res).then(res => {
                 return new SuccessModel(res);  // 调用对应请求方法的处理函数
-            })
+            }).catch(err => new ErrorModel(err))
         } else {
             // 如果没有对应的请求方法处理函数
-            new ErrorModel(res.status(405).send('Method Not Allowed'))
+            return new Promise(() => new ErrorModel(res.status(405).send('Method Not Allowed')))
         }
     } else {
         // 如果路径没有找到
-
-        new ErrorModel(res.status(404).send('Not Found'))
+        return new Promise(() => new ErrorModel(res.status(404).send('Not Found')))
     }
 }
 

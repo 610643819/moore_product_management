@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const {SuccessModel, ErrorModel} = require("../model/responseModel");
 
 // 配置数据库连接
 const config = {
@@ -15,13 +16,15 @@ const config = {
 let connection = mysql.createConnection(config);
 
 // 执行SQL查询
-function execSQL(sql) {
+function execSQL(sql, values) {
     return new Promise((resolve, reject) => {
+        // 定义执行查询的函数
         const executeQuery = () => {
-            connection.query(sql, (err, result) => {
+            connection.query(sql, values, (err, result) => {
                 if (err) {
-                    console.error('SQL 执行失败:', err);
-                    if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
+                    console.error('1.SQL 执行失败:', err);
+                    // 检查是否是连接丢失或拒绝的错误PROTOCOL_ENQUEUE_AFTER_FATAL_ERRO
+                    if (err.code === 'PROTOCOL_CONNECTION_LOST' || err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT' || err.fatal === false) {
                         console.log('连接丢失或被拒绝，尝试重新连接...');
                         // 重新连接数据库
                         connection = mysql.createConnection(config);
@@ -35,7 +38,7 @@ function execSQL(sql) {
                             }
                         });
                     } else {
-                        reject(err); // 其他错误
+                        resolve(err); // 其他错误直接拒绝
                     }
                 } else {
                     resolve(result); // 查询成功，返回结果

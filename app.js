@@ -40,11 +40,11 @@ const serverHandler = (req, res) => {
                             console.log('3.post接受到的数据==>', JSON.parse(postData))
                             return resolve(JSON.parse(postData));
                         } catch (error) {
-                            return reject(error); // 捕获 JSON 解析错误
+                            return resolve(error); // 捕获 JSON 解析错误
                         }
                     })
                 } else {
-                    reject('发送了未知错误')
+                    resolve('发送了未知错误')
                 }
             } else if (req.method === 'GET') {
                 console.log('2.开始GET请求处理')

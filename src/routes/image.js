@@ -1,11 +1,9 @@
 const {SuccessModel, ErrorModel} = require("../model/responseModel");
-const {pushManufacturerItem, getLabelList} = require('../controllers/manufacturer.js')
+const {pushImageItem} = require('../controllers/image.js')
 
 const pathHandlers = {
-    '/api/manufacturer/list': getLabelList,
-    '/api/manufacturer/push': pushManufacturerItem,
-    '/api/manufacturer/detail': '',
-}
+    '/api/image/push': pushImageItem, // 获取标签type
+};
 
 const handleRouter = (req, res) => {
     const handler = pathHandlers[req.path];  // 获取当前路径的处理对象

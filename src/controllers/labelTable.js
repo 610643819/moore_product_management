@@ -46,7 +46,7 @@ const getLabelList = ({ body: { page = 1, pageSize = 10, label = '', type = '' }
     if (conditions.length > 0) {
         sql += ' AND ' + conditions.join(' AND ');
     }
-
+    sql += ' ORDER BY id DESC';  // 按 id 字段倒序排序
     // 添加分页功能
     const offset = (page - 1) * pageSize;
     sql += ` LIMIT ${pageSize} OFFSET ${offset}`;

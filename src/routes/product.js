@@ -2,8 +2,8 @@ const {SuccessModel, ErrorModel} = require("../model/responseModel");
 const {pushManufacturerItem, getLabelList} = require('../controllers/manufacturer.js')
 
 const pathHandlers = {
-    '/api/manufacturer/list': getLabelList,
-    '/api/manufacturer/push': pushManufacturerItem,
+    '/api/product/list': getLabelList,
+    '/api/product/push': pushManufacturerItem,
     '/api/manufacturer/detail': '',
 }
 
