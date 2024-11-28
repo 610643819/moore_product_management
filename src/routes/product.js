@@ -1,9 +1,11 @@
 const {SuccessModel, ErrorModel} = require("../model/responseModel");
-const {pushProductItem} = require('../controllers/product.js')
+const {pushProductItem, getProductList, viewProductItem, editProductItem} = require('../controllers/product.js')
 
 const pathHandlers = {
-    // '/api/product/list': getLabelList,
+    '/api/product/list': getProductList,
     '/api/product/push': pushProductItem,
+    '/api/product/view': viewProductItem,
+    '/api/product/edit': editProductItem,
     '/api/manufacturer/detail': '',
 }
 

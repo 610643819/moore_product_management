@@ -3,6 +3,8 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+let envUrl = 'http://localhost:3000'
+
 const rootDir = path.join(__dirname, '../..');
 
 // 配置 multer，用于处理图片上传
@@ -40,7 +42,7 @@ const pushImageItem = async (req, res) => {
     try {
         // 等待文件上传完成
         const file = await uploadPromise();
-        const imagePath = `/uploads/${file.filename}`; // 获取文件路径
+        const imagePath = `${envUrl}/uploads/${file.filename}`; // 获取文件路径
 
         // 使用上传的文件名作为 tagName
         const tagName = file.filename; // 这里tagName即为文件名
@@ -56,13 +58,9 @@ const pushImageItem = async (req, res) => {
         // 执行 SQL 并返回结果
         const result = await execSQL(sql);
         console.log('SQL 执行结果:', result);
-
+        if (!result) return resolve([]);
         // 返回结果
-        return {
-            result,
-            tagName,
-            imagePath: imagePath
-        };
+        return imagePath;
 
     } catch (error) {
         console.error('上传或数据库操作失败:', error);

@@ -13,13 +13,13 @@ const handleRouter = (req, res) => {
         console.log(`5.开始处理：${req.method}请求`);
         if (typeof handler === 'function') {
             return handler(req, res).then(res => {
-                return new SuccessModel(res);
+                return res;
             }).catch(err => new ErrorModel(err))
         }
         // 如果 handler 是对象，按请求方法分发
         if (handler[req.method]) {
             return handler[req.method](req, res).then(res => {
-                return new SuccessModel(res);  // 调用对应请求方法的处理函数
+                return res;  // 调用对应请求方法的处理函数
             }).catch(err => new ErrorModel(err))
         } else {
             // 如果没有对应的请求方法处理函数

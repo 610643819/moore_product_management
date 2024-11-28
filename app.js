@@ -2,6 +2,7 @@ const querystring = require('querystring');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
+const routerModel = require('./src/model/routerModel')
 
 // 设置上传路径  D:\moore\moore_product_management\src\uploads
 const rootDir = path.join(__dirname,); // 根目录
@@ -48,6 +49,7 @@ const serverHandler = (req, res) => {
             // POST 请求处理
             if (req.method === 'POST') {
                 console.log('2.开始POST请求处理');
+                // console.log('req.headers[\'content-type\']', req.headers['content-type'])
                 if (req.headers['content-type'] === 'application/json; charset=UTF-8') {
                     let postData = '';
                     req.on('data', (chunk) => {
