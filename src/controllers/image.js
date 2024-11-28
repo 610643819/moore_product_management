@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-let envUrl = 'http://localhost:3000'
+let envUrl = 'https://47.254.18.251:3000'
 
 const rootDir = path.join(__dirname, '../..');
 
