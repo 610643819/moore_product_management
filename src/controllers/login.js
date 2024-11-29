@@ -49,7 +49,7 @@ const register = (body) => {
         // Insert new user into the database
         const insertSQL = `
             INSERT INTO user (username, userPassword, userNickName) 
-            VALUES ('${name}', '${password}', ${nickName})
+            VALUES ('${name}', '${password}', '${nickName}')
         `;
         return execSQL(insertSQL);
     }).then(() => {
